@@ -1,9 +1,17 @@
+
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class App {
+    private static ConsoleProgress_Bar progressBar = new ConsoleProgress_Bar();
     static Scanner scanner = new Scanner(System.in);
     static int choixMenu = 0;
     static String produit;
+    static int choixSucre = 0;
+    static int nbSucre = 0;
+    static boolean aUnGobelet = false;
+
+
     public static void main(String[] args) throws Exception {
         Bienvenue();
         Menu();
@@ -13,9 +21,86 @@ public class App {
 
     private static void Sucre() {
         System.out.println();
-        System.out.println("Souhaitez vous du sucre dans votre '"+produit+"' ?" );
-        System.out.println();
+        System.out.println("Souhaitez vous du sucre dans votre '"+produit+"' ?");
+        System.out.println("1- Oui.");
+        System.out.println("2- Non.");
         System.out.println("****************************************************************");
+        System.out.println();
+
+        try {
+            System.out.print(" Entrer votre choix : ");
+            choixSucre = Integer.parseInt(scanner.nextLine());
+            System.out.println();
+            System.out.println("****************************************************************");
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println("Veuillez entrer un nombre correct");
+        }
+
+        switch(choixSucre) {
+            case 1:
+                System.out.println();
+                do {
+                    try {
+                        System.out.print(" Veuillez saisir un niveau de sucre entre 1 et 5 : ");
+                        nbSucre = Integer.parseInt(scanner.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Erreur : veuillez entrer un chiffre entre 1 et 5");
+                    }
+                }while( nbSucre > 5 || nbSucre < 1);
+                System.out.println();
+                System.out.println("Nombre de sucre(s) demandé(s) : " + nbSucre);
+                System.out.println("****************************************************************");
+                Gobelet();
+                break;
+
+            case 2 :
+                Gobelet();
+                break;
+        }
+    }
+
+    private static void Gobelet() {
+        int gobelet = 0; 
+        System.out.println("Possédez vous votre propre gobelet, tasse, verre ?");
+        System.out.println("1- Oui.");
+        System.out.println("2- Non.");
+        System.out.println("****************************************************************");
+        System.out.println();
+
+        do{
+            try {
+                System.out.print(" Entrer votre choix : ");
+                gobelet = Integer.parseInt(scanner.nextLine());
+                System.out.println("****************************************************************");
+                System.out.println();
+            } catch (Exception e) {
+                System.out.println("Veuillez entrer un choix valide");
+            }
+        }while(gobelet > 2 || gobelet< 1);
+
+        switch(gobelet) {
+            case 1:
+                aUnGobelet = true;
+                System.out.println();
+                System.out.println("Choix enregistré");
+                System.out.println("****************************************************************");
+                TemperatureDeLEau();
+                break;
+
+            case 2 :
+                aUnGobelet = false;
+                System.out.println();
+                System.out.println("Choix enregistré");
+                System.out.println("****************************************************************");
+                TemperatureDeLEau();
+                break;
+        }
+        
+    }
+
+    public static void TemperatureDeLEau() {
+        System.out.println("Préparation de l'eau");
     }
 
     public static void Menu() {
@@ -111,6 +196,30 @@ public class App {
         System.out.println("");
         System.out.println("Veuillez faire votre choix parmis les produits disponibles : ");
         System.out.println();
+    }
+
+
+    public static void printMsgWithProgressBar(String message, int length, long timeInterval)
+    {
+        char incomplete = '░'; // U+2591 Unicode Character
+        char complete = '█'; // U+2588 Unicode Character
+        StringBuilder builder = new StringBuilder();
+        Stream.generate(() -> incomplete).limit(length).forEach(builder::append);
+        System.out.println(message);
+        for(int i = 0; i < length; i++)
+        {
+            builder.replace(i,i+1,String.valueOf(complete));
+            String progressBar = "\r"+builder;
+            System.out.print(progressBar);
+            try
+            {
+                Thread.sleep(timeInterval);
+            }
+            catch (InterruptedException ignored)
+            {
+
+            }
+        }
     }
 
 }
